@@ -4,6 +4,8 @@ from pydantic import BaseModel, ConfigDict, Field
 from datetime import datetime, timezone
 from uuid import uuid4
 from fastapi import HTTPException
+from ai_service import summarize_lead
+from openai import APIError
 
 app = FastAPI(title="Lead Manager API")
 
@@ -45,3 +47,15 @@ async def add_lead(data: LeadCreate):
     save_leads(leads)
 
     return lead
+
+@app.post("/leads/summarize")
+def summarize_request(data: LeadCreate):
+    try:
+        summary = summarize_lead(data.message)
+    except APIError:
+        raise HTTPException(
+            status_code=502,
+            detail="AI service unavailable. Please try again later.",
+        )
+
+    return {"summary": summary}

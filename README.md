@@ -28,8 +28,15 @@ python -m pip install -r requirements.txt
 ```bash
 python main.py
 ```
-
 ## Tests
+
+```bash
+python -m unittest -v
+```
+
+Six tests cover email search, status updates, and the AI summary endpoint.
+AI calls are mocked during tests; no OpenAI requests are sent.
+
 ## Run the API
 
 ```bash
@@ -42,15 +49,10 @@ Endpoints:
 - GET /health — check server health.
 - GET /leads — list saved leads.
 - POST /leads — create a lead.
+- POST /leads/summarize — generate an AI summary without saving a lead.
 
 Run either the CLI or the API, not both at the same time.
 They share the same local JSON file.
-
-```bash
-python -m unittest -v
-```
-
-Four tests cover email search and status updates.
 
 ## Local data
 
@@ -60,7 +62,22 @@ Local lead data is excluded from Git through .gitignore.
 ## Project status
 
 This is a local learning project and portfolio foundation.
-AI integration and external CRM integration are not implemented yet.
+AI summaries are available through the OpenAI API.
+External CRM integration is not implemented yet.
 
 The email check is basic and does not verify that an address exists.
 Run only one instance at a time to avoid conflicting file updates.
+
+## AI setup
+
+Create a local .env file beside main.py:
+
+```dotenv
+OPENAI_API_KEY=your_api_key_here
+```
+
+Replace the placeholder with your own API key.
+Never commit .env or real API keys.
+
+The summary endpoint sends only the request message to OpenAI.
+Live AI requests incur API charges.
