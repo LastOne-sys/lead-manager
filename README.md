@@ -15,7 +15,13 @@ A Python command-line application for managing customer enquiries.
 
 ## Requirements
 
-Python 3.10 or newer. No external packages required.
+Developed and tested with Python 3.14.
+
+Install dependencies:
+
+```bash
+python -m pip install -r requirements.txt
+```
 
 ## Run
 
@@ -24,6 +30,21 @@ python main.py
 ```
 
 ## Tests
+## Run the API
+
+```bash
+python -m uvicorn api:app --reload
+```
+
+Open http://127.0.0.1:8000/docs to try the API.
+
+Endpoints:
+- GET /health — check server health.
+- GET /leads — list saved leads.
+- POST /leads — create a lead.
+
+Run either the CLI or the API, not both at the same time.
+They share the same local JSON file.
 
 ```bash
 python -m unittest -v
