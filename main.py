@@ -95,6 +95,13 @@ def update_lead_status(leads, lead_id, new_status):
 
     return False
 
+def find_lead_by_id(leads, lead_id):
+    for lead in leads:
+        if lead.get("id") == lead_id:
+            return lead
+
+    return None
+
 def main():
 
     while True:

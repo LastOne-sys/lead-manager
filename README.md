@@ -34,9 +34,7 @@ python main.py
 python -m unittest -v
 ```
 
-Six tests cover email search, status updates, and the AI summary endpoint.
-AI calls are mocked during tests; no OpenAI requests are sent.
-
+Nine tests cover email search, status updates, AI summaries, and saving summaries for existing leads.
 ## Run the API
 
 ```bash
@@ -50,6 +48,7 @@ Endpoints:
 - GET /leads — list saved leads.
 - POST /leads — create a lead.
 - POST /leads/summarize — generate an AI summary without saving a lead.
+- POST /leads/{lead_id}/summary — generate and save a summary for an existing lead; return the saved summary if available.
 
 Run either the CLI or the API, not both at the same time.
 They share the same local JSON file.

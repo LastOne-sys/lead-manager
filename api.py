@@ -1,11 +1,12 @@
 from fastapi import FastAPI
-from main import load_leads, save_leads
+from starlette.concurrency import run_in_threadpool
 from pydantic import BaseModel, ConfigDict, Field
 from datetime import datetime, timezone
 from uuid import uuid4
 from fastapi import HTTPException
 from ai_service import summarize_lead
 from openai import APIError
+from main import load_leads, save_leads, find_lead_by_id
 
 app = FastAPI(title="Lead Manager API")
 
@@ -59,3 +60,35 @@ def summarize_request(data: LeadCreate):
         )
 
     return {"summary": summary}
+
+@app.post("/leads/{lead_id}/summary")
+async def summarize_saved_lead(lead_id: str):
+    leads = load_leads()
+    lead = find_lead_by_id(leads, lead_id)
+
+    if lead is None:
+        raise HTTPException(status_code=404, detail="Lead not found.")
+
+    if lead.get("summary"):
+        return lead
+
+    try:
+        summary = await run_in_threadpool(
+            summarize_lead, lead["message"]
+        )
+    except APIError:
+        raise HTTPException(
+            status_code=502,
+            detail="AI service unavailable. Please try again later.",
+        )
+
+    leads = load_leads()
+    lead = find_lead_by_id(leads, lead_id)
+
+    if lead is None:
+        raise HTTPException(status_code=404, detail="Lead not found.")
+
+    lead["summary"] = summary
+    save_leads(leads)
+
+    return lead
