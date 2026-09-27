@@ -80,3 +80,46 @@ Never commit .env or real API keys.
 
 The summary endpoint sends only the request message to OpenAI.
 Live AI requests incur API charges.
+
+
+## n8n workflow
+
+The workflow creates a sample lead through the Python API, then generates
+and saves an AI summary for that lead.
+
+Workflow file: [create_and_summarize_lead.json](workflows/create_and_summarize_lead.json)
+
+### Requirements
+
+- The Python project dependencies are installed.
+- A valid `OPENAI_API_KEY` is configured in the project's `.env` file.
+- n8n is running locally on the same computer as the Python API.
+
+This workflow was tested with n8n 2.40.7 and Node.js 24.
+
+### Run the workflow
+
+1. Start the Python API from the project directory:
+
+   ```bash
+   python -m uvicorn api:app --reload
+   ```
+
+2. Open your local n8n instance.
+3. Import `workflows/create_and_summarize_lead.json`.
+4. Open the `Create Lead` node to review or edit the sample customer data.
+5. Click `Execute workflow`.
+6. Open the `Summarize Lead` output and check the `summary` field.
+
+Keep both n8n and the Python API running during execution.
+
+Each full workflow run creates a new lead and requests an AI summary.
+OpenAI API usage may incur charges. The lead and its summary are saved
+in the local `leads.json` file.
+
+The OpenAI key stays in the Python project's environment and is not
+included in the workflow export.
+
+The workflow uses `http://127.0.0.1:8000`. This setup assumes n8n runs
+directly on the same computer; n8n Cloud or Docker requires different
+network configuration.
