@@ -1,0 +1,101 @@
+{
+  "name": "Lead Manager — Create and Summarize",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "aec8375a-f97c-4e8c-9e58-6402f5a65c61",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8000/leads",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "Alex"
+            },
+            {
+              "name": "email",
+              "value": "alex@example.com"
+            },
+            {
+              "name": "message",
+              "value": "Please automate incoming customer emails and save requests to a spreadsheet."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "4ffa2a83-85dd-451e-be61-b61225ae469e",
+      "name": "Create Lead"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://127.0.0.1:8000/leads/{{ $json.id }}/summary",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        448,
+        0
+      ],
+      "id": "63537ba1-233f-4c6b-aed3-d9faab8f91ac",
+      "name": "Summarize Lead"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Create Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Lead": {
+      "main": [
+        [
+          {
+            "node": "Summarize Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "versionId": "fa6b7851-e717-42b6-a4ba-435e57210b3a",
+  "meta": {
+    "instanceId": "498acaf1a3520e66c841bfa64a79fad17c0603671dcbc8a949488c1fc25f2e0b"
+  },
+  "nodeGroups": [],
+  "id": "0m45vSKVBp5LCCVT",
+  "tags": []
+}
